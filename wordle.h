@@ -22,4 +22,11 @@ std::set<std::string> wordle(
     const std::string& floating,
     const std::set<std::string>& dict);
 
+void wordleHelper(
+    std::string& in,
+    std::string& floating,
+    const std::set<std::string>& dict,
+    int pos,
+    std::set<std::string>& valid);
+
 #endif
