@@ -23,12 +23,13 @@ std::set<std::string> wordle(
 {
     // Add your code here
     std::set<std::string> valid;
-    int pos = 0;
     std::string inTemp = in;
     std::string floatingTemp = floating;
 
-    wordleHelper(inTemp, floatingTemp, dict, pos, valid);
+    std::cout << "here " << std::endl;
 
+    wordleHelper(inTemp, floatingTemp, dict, 0, valid);
+    std::cout << "here " << std::endl;
     return valid;
 }
 
@@ -40,119 +41,83 @@ void wordleHelper(
     int pos,
     std::set<std::string>& valid) {
 
+    // std::cout << "\n\nhere 0" << std::endl;
+    // std::cout << "\tpos: " << pos << std::endl;
+    // std::cout << "\tin: " << in << std::endl;
+    // if (floating.length() != 0) {
+    //     std::cout << "here 00" << std::endl;
+    //     std::cout << "\tfl: " << floating << std::endl;
+    // }
+
+
     // base case 1: if string is completed and a valid word
     if (pos == in.length() && dict.find(in) != dict.end()) {
+        // std::cout << "here 1" << std::endl;
+
         // add valid word to set
         valid.insert(in);
+        // std::cout << "inserted " << in << std::endl;
+        
+        // std::cout << "here 2" << std::endl;
+
         return;
+        // std::cout << "here 22" << std::endl;
     }
+
+    // std::cout << "here 10" << std::endl;
+
 
     // base case 2: if string is complete but not valid
     if (pos == in.length()) {
+        // std::cout << "here 3" << std::endl;
         return;
     }
+
+    // std::cout << "here 20" << std::endl;
 
     // recursive case: string isn't complete
 
     // if there are any floating characters, place them in unique combinations
     if (floating.length() != 0) {
-        std::string originalFloating = floating;
+        // std::cout << "here 4" << std::endl;
 
         for (int i = 0; i < in.length(); ++i) {
+            // std::cout << "here 41" << std::endl;
             if (in[i] == '-') {
+                // std::cout << "here 411" << std::endl;
                 // set current string pos to first floating character
-                in[pos] == floating[0];
+                in[i] = floating[0];
                 // remove first floating character from string
-                floating.substr(1, floating.length() - 1);
+                // std::cout << "here 42" << std::endl;
+                std::string updatedFloating = floating.substr(1, floating.length() - 1);
+                // std::cout << "updatedFloating: " << updatedFloating << std::endl;
 
+                // std::cout << "here 43" << std::endl;
                 // recursive call with updated in and floating strings
-                wordleHelper(in, floating, dict, 0, valid);
+                // std::cout << "recursive call 1" << std::endl;
+                wordleHelper(in, updatedFloating, dict, 0, valid);
+                // std::cout << "here 44" << std::endl;
 
                 // revert changes
                 in[i] = '-';
-                floating = originalFloating;
+                // floating = originalFloating;
             }
         }
 
     }
     // if there aren't any floating characters, place a - z in remaining empty positions
     else {
-        bool changed = false;
-        for (int i = 0; i < 26; i++) {
-            if (in[pos] == '-') {
-                // update in
-                in[pos] == 'a' + i;
-                changed = true;
-            }
-            
-            // recursive call with updated in and pos variables
-            wordleHelper(in, floating, dict, pos + 1, valid);
+        if (in[pos] == '-') {
+            for (int i = 0; i < 26; ++i) {
+                in[pos] = 'a' + i;
 
-            // revert changes if any were made
-            if (changed) {
-                in[i] = '-';
+                wordleHelper(in, floating, dict, pos + 1, valid);
+
+                in[pos] = '-';
             }
         }
+        else {
+            wordleHelper(in, floating, dict, pos + 1, valid);
+        }
     }
-
-
-
-
-
-    // std::string originalFloating = floating;
-
-    // // iterate through each floating letter
-    // for (int i = 0; i < floating.length(); ++i) {
-
-    //     if (in[pos] == "-") {
-    //             // update in and floating
-    //             in[pos] == floating[i];
-    //             floating.substr(floating.begin() + 1);
-    //     }
-
-    //     // add valid word to set
-    //     if (wordleHelper(in, floating, dict, ++pos, valid) == true) {
-    //         valid.append(in);
-    //     }
-    //     // otherwise revert changes
-    //     else {
-    //         in[j] = "-";
-    //         floating = originalFloating;
-    //     }
-    //     // // loop through all the letters in the string
-    //     // for (int j = 0; j < in.length(); ++j) {
-
-    //     //     // if the letter is currently unfilled
-    //     //     if (in[j] == '-') {
-    //     //         // update in and floating
-    //     //         in[j] == floating[i];
-    //     //         floating.substr(floating.begin() + 1);
-
-    //     //         if (wordleHelper(in, floating, dict) != "-") {
-    //     //             valid.append(in);
-    //     //         }
-    //     //         else {
-    //     //             in[j] = "-";
-    //     //         }
-    //     //     }
-
-    //     // }
-    // }
-
-    // bool changed = false;
-    // for (int i = 0; i < 26; i++) {
-    //     if (in[pos] == "-") {
-    //         // update in
-    //         in[pos] == 'a' + i;
-    //         changed = true;
-    //     }
-        
-    //     wordleHelper(in, floating, dict, pos + 1, valid);
-    //     // revert changes if any were made
-    //     if (changed) {
-    //         in[j] = "-";
-    //     }
-    // }
-
-
 }
