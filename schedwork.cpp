@@ -44,12 +44,11 @@ bool schedule(
         sched.push_back(std::vector<Worker_T>(dailyNeed, 0));
     }
 
-
+    // create a vector filled with default 0 with size of k workers
     std::vector<int> occurences(avail[0].size(), 0);
     
-    
+    // call helper function
     return scheduleHelper(avail, dailyNeed, maxShifts, sched, occurences, 0, 0);
-
 }
 
 bool scheduleHelper(
@@ -62,27 +61,14 @@ bool scheduleHelper(
     int col
 )
 {
-    // cout << "\nhere" << endl;
-    // cout << row << ", " << col << endl;
-
-    // for (int i = 0; i < sched.size(); i++) {
-    //     for (int j = 0; j < sched[0].size(); j++) {
-    //         cout << sched[i][j] << ", ";
-    //     }
-    //     cout << endl;
-    // }
 
     // base case 1: traversed through entire sched matrix without backtracking
     if (row == sched.size()) {
-        // cout << "here 2" << endl;
-
         return true;
     }
 
     // base case 2: traversed through an entire day
     if (col == sched[0].size()) {
-        // cout << "here 3" << endl;
-
         return scheduleHelper(avail, dailyNeed, maxShifts, sched, occurences, row + 1, 0);
     }
 
@@ -90,22 +76,26 @@ bool scheduleHelper(
 
     // iterate through each worker's availability for one day
     for (int i = 0; i <= avail[0].size(); ++i) {
-        // cout << "here 4" << endl;
-
+        // update schedule and occurences
         sched[row][col] = i;
         ++occurences[i];
 
         // check if worker won't go over max shifts and is available
         if (occurences[i] <= maxShifts && avail[row][i]) {
+            // recurse further if current state is valid
             if (scheduleHelper(avail, dailyNeed, maxShifts, sched, occurences, row, col + 1)) {
+                // return true if recursed to end
                 return true;
             }
         }
 
+        // revert occurences
         --occurences[i];
     }
 
     sched[row][col] = 0;
+
+    // return false if previous recursive calls weren't true
     return false;
 
 }
